@@ -2,13 +2,13 @@ import { Flex, Heading } from '@chakra-ui/react'
 
 export const Hero = ({ title }: { title: string }) => (
   <Flex
+    mt={"2rem"}
     justifyContent="center"
     alignItems="center"
-    height="100vh"
     bgGradient="linear(to-l, heroGradientStart, heroGradientEnd)"
     bgClip="text"
   >
-    <Heading fontSize="6vw">{title}</Heading>
+    <Heading fontSize="2vw">{title}</Heading>
   </Flex>
 )
 
