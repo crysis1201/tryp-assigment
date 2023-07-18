@@ -7,7 +7,7 @@ import makeData from '../mock/MakeData'
 
 const Index = () => {
 
-  const headers = ["Timestamp", "Purchase ID", "Mail", "Name", "Status"]
+  const headers = ["Timestamp", "Purchase ID", "Mail", "Name", "Source", "Status", "Select"]
   
   const data = useMemo(() => makeData(1000), []);
 

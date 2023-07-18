@@ -33,6 +33,7 @@ import { IBookings } from "../mock/MakeData";
 interface ITable {
   columns: string[];
   data: IBookings[];
+  selected: string[];
   getCellProps: any;
   caption?: string;
   sorting?: boolean;
@@ -42,6 +43,7 @@ interface ITable {
 export const DateTable = ({
   columns,
   data,
+  selected,
   sorting,
   pagination,
   getCellProps,
@@ -109,7 +111,7 @@ export const DateTable = ({
           {(pagination ? page : rows).map((row, i) => {
             prepareRow(row);
             return (
-              <Tr {...row.getRowProps()}>
+              <Tr style={{background: selected.includes(row.original.purchaseid) ? "rgba(255,255,255,0.05)" : ""}} {...row.getRowProps()}>
                 {row.cells.map((cell) => {
                   return (
                     <Td {...cell.getCellProps()}>
@@ -122,7 +124,7 @@ export const DateTable = ({
                           getCellProps(cell),
                         ])}
                       >
-                        {cell.column.id === "timestamp" ? moment(new Date(cell.value)).fromNow() : cell.render("Cell")}
+                        {cell.column.id === "select" ?  selected.includes(row.original.purchaseid) ? "Deselect" : "Select" : cell.column.id === "timestamp" ? moment(new Date(cell.value)).fromNow() : cell.render("Cell")}
                       </p>
                     </Td>
                   );

@@ -30,6 +30,7 @@ export const TableContainer = ({
 }: ITable) => {
   const [searchText, setSearchText] = useState("");
   const [value, setValue] = useState([]);
+  const [selected, setSelected] = useState([]);
 
   const options = [
     {
@@ -88,6 +89,7 @@ export const TableContainer = ({
               defaultValue={value}
               onChange={setValue}
               options={options}
+              placeholder="Select status"
               size={"md"}
             />
             <InputGroup>
@@ -107,13 +109,16 @@ export const TableContainer = ({
         <DateTable
           columns={getColumns()}
           getCellProps={(cellInfo) => ({
+            onClick: () => cellInfo.column.id === "select" && selected.includes(cellInfo.row.original.purchaseid) ? setSelected((selected) => selected.filter((d) => d != cellInfo.row.original.purchaseid)) : setSelected((selected) => [...selected,  cellInfo.row.original.purchaseid]),
             style: {
-              borderRadius: cellInfo.column.id === "status" ? "25px" : null,
-              padding: cellInfo.column.id === "status" ? "0.5rem 1rem" : null,
-              textAlign: cellInfo.column.id === "status" ? "center" : null,
+              minWidth: '7rem',
+              borderRadius: cellInfo.column.id === "status" ? "25px" : cellInfo.column.id === "select" ? "8px" : null,
+              padding: cellInfo.column.id === "status" || cellInfo.column.id === "select" ? "0.5rem 1rem" : null,
+              textAlign: cellInfo.column.id === "status" || cellInfo.column.id === "select" ? "center" : null,
               color: cellInfo.column.id === "status" ? "#151515" : null,
+              cursor: cellInfo.column.id === "select" ? "pointer" : null,
               width: "fit-content",
-              backgroundColor: cellInfo.value === "Waiting" ? "#FFFCC9" : cellInfo.value === "Success" ? "#90EE90" : cellInfo.value === "Failed" ? "#ffc6c4" : null
+              backgroundColor:  cellInfo.column.id === "select" ? "rgba(255,255,255,0.15)" : cellInfo.value === "Waiting" ? "#FFFCC9" : cellInfo.value === "Success" ? "#90EE90" : cellInfo.value === "Failed" ? "#ffc6c4" : null
             }
           })}
           data={data
@@ -139,6 +144,7 @@ export const TableContainer = ({
             })}
           sorting={sorting}
           pagination={pagination}
+          selected={selected}
         />
       </Main>
     </>
