@@ -35,6 +35,7 @@ interface ITable {
   columns: string[];
   data: IBookings[];
   selected: string[];
+  size: string
   getCellProps: any;
   caption?: string;
   sorting?: boolean;
@@ -48,6 +49,7 @@ export const DateTable = ({
   sorting,
   pagination,
   getCellProps,
+  size
 }: ITable) => {
   const {
     getTableProps,
@@ -81,6 +83,7 @@ export const DateTable = ({
       <Table
         {...getTableProps()}
         overflowX={"scroll"}
+        size={size}
       >
         <Thead>
           {headerGroups.map((headerGroup) => (

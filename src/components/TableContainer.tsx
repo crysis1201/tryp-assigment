@@ -3,15 +3,18 @@ import { Main } from "./Main";
 import { DateTable } from "./Table";
 import {
   Flex,
+  HStack,
   Heading,
   Input,
   InputGroup,
   InputLeftElement,
   InputRightElement,
+  useRadioGroup,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { ChakraStylesConfig, Select } from "chakra-react-select";
 import { IBookings } from "../mock/MakeData";
+import { RadioCard } from "./RadioCard";
 
 interface ITable {
   headers: string[];
@@ -29,8 +32,19 @@ export const TableContainer = ({
   pagination,
 }: ITable) => {
   const [searchText, setSearchText] = useState("");
+  const [size, setSize] = useState("xl");
   const [value, setValue] = useState([]);
   const [selected, setSelected] = useState([]);
+
+  const sizes = ['sm', 'md', 'lg']
+
+  const { getRootProps, getRadioProps } = useRadioGroup({
+    name: 'sizes',
+    defaultValue: 'xl',
+    onChange: (e) => setSize(e),
+  })
+
+  const group = getRootProps()
 
   const options = [
     {
@@ -59,8 +73,13 @@ export const TableContainer = ({
   };
 
   const chakraStyles: ChakraStylesConfig = {
+    container: (provided, state) => ({
+        ...provided,
+        flex: "1 1 30%",
+    }),
     control: (provided, state) => ({
       ...provided,
+      flex: "1 1 30%",
       flexWrap: "nowrap",
       minWidth: "12rem",
     }),
@@ -85,7 +104,7 @@ export const TableContainer = ({
           gap={"2rem"}
         >
           <Heading fontSize="1.5rem">{caption}</Heading>
-          <Flex alignItems={"center"} gap={"2rem"}>
+          <Flex alignItems={"center"} gap={"2rem"} flexWrap={{base: "wrap", sm: "nowrap"}}>
             <Select
               chakraStyles={chakraStyles}
               isMulti
@@ -95,7 +114,7 @@ export const TableContainer = ({
               placeholder="Select status"
               size={"md"}
             />
-            <InputGroup>
+            <InputGroup minWidth={"12rem"} flex={"1 1 30%"}>
               <Input
                 onChange={(e) => setSearchText(e.target.value)}
                 value={searchText}
@@ -107,6 +126,16 @@ export const TableContainer = ({
                 <SearchIcon color="gray.300" />
               </InputRightElement>
             </InputGroup>
+            <HStack flex={"1 1 30%"} {...group}>
+                {sizes.map((value) => {
+                    const radio = getRadioProps({ value })
+                    return (
+                    <RadioCard key={value} {...radio}>
+                        {value}
+                    </RadioCard>
+                    )
+                })}
+            </HStack>
           </Flex>
         </Flex>
         <DateTable
@@ -148,6 +177,7 @@ export const TableContainer = ({
           sorting={sorting}
           pagination={pagination}
           selected={selected}
+          size={size}
         />
       </Main>
     </>
