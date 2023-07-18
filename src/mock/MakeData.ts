@@ -1,5 +1,12 @@
 import { Config, names, uniqueNamesGenerator } from "unique-names-generator";
 
+export interface IBookings {
+  timestamp: string
+  purchaseid: string
+  mail: string
+  name: string
+  status: string 
+}
 
 const range = len => {
   const arr = []
@@ -39,7 +46,7 @@ const config: Config = {
 const newBooking = () => {
   const statusChance = Math.random()
   return {
-    timestamp: randomDate(new Date("10-6-2022"), new Date("10-6-2022")).toISOString(),
+    timestamp: randomDate(new Date("10-6-2021"), new Date("10-6-2022")).toISOString(),
     name: uniqueNamesGenerator(config),
     mail: getRandomEmail("@gmail.com", 10),
     purchaseid: generateUID(),

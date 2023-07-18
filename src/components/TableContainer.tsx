@@ -1,7 +1,17 @@
-import { IBookings, MockData } from "../mock/MOCK";
-import React from "react";
+import React, { useState } from "react";
 import { Main } from "./Main";
 import { DateTable } from "./Table";
+import {
+  Flex,
+  Heading,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+} from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
+import { ChakraStylesConfig, Select } from "chakra-react-select";
+import { IBookings } from "../mock/MakeData";
 
 interface ITable {
   headers: string[];
@@ -18,6 +28,23 @@ export const TableContainer = ({
   sorting,
   pagination,
 }: ITable) => {
+  const [searchText, setSearchText] = useState("");
+  const [value, setValue] = useState([]);
+
+  const options = [
+    {
+      label: "Success",
+      value: "success",
+    },
+    {
+      label: "Failed",
+      value: "failed",
+    },
+    {
+      label: "Waiting",
+      value: "waiting",
+    },
+  ];
 
   const getColumns = () => {
     let columns = [];
@@ -30,10 +57,89 @@ export const TableContainer = ({
     return columns;
   };
 
+  const chakraStyles: ChakraStylesConfig = {
+    control: (provided, state) => ({
+      ...provided,
+      flexWrap: "nowrap",
+      minWidth: "20rem",
+    }),
+    valueContainer: (provided, state) => ({
+      ...provided,
+      flexWrap: "nowrap",
+    }),
+  };
+
   return (
     <>
-      <Main>
-        <DateTable columns={getColumns()} data={data} sorting={sorting} pagination={pagination} />
+      <Main
+          overflowY={"scroll"} 
+          maxHeight={!pagination ? "50rem" : ""} 
+        >
+        <Flex
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          gap={"2rem"}
+        >
+          <Heading fontSize="1.5rem">{caption}</Heading>
+          <Flex alignItems={"center"} gap={"2rem"}>
+            <Select
+              chakraStyles={chakraStyles}
+              isMulti
+              defaultValue={value}
+              onChange={setValue}
+              options={options}
+              size={"md"}
+            />
+            <InputGroup>
+              <Input
+                onChange={(e) => setSearchText(e.target.value)}
+                value={searchText}
+                type="text"
+                placeholder="Search bookings"
+                size={"md"}
+              />
+              <InputRightElement pointerEvents="none">
+                <SearchIcon color="gray.300" />
+              </InputRightElement>
+            </InputGroup>
+          </Flex>
+        </Flex>
+        <DateTable
+          columns={getColumns()}
+          getCellProps={(cellInfo) => ({
+            style: {
+              borderRadius: cellInfo.column.id === "status" ? "25px" : null,
+              padding: cellInfo.column.id === "status" ? "0.5rem 1rem" : null,
+              textAlign: cellInfo.column.id === "status" ? "center" : null,
+              color: cellInfo.column.id === "status" ? "#151515" : null,
+              width: "fit-content",
+              backgroundColor: cellInfo.value === "Waiting" ? "#FFFCC9" : cellInfo.value === "Success" ? "#90EE90" : cellInfo.value === "Failed" ? "#ffc6c4" : null
+            }
+          })}
+          data={data
+            .filter((d) => {
+              const isExists = value.find(({ value }) => {
+                return value === d.status.toLowerCase();
+              });
+              if (isExists || value.length === 0) {
+                return true;
+              } else {
+                return false;
+              }
+            })
+            .filter((d) => {
+              if (
+                d.name.toLowerCase().includes(searchText) ||
+                d.mail.toLowerCase().includes(searchText) ||
+                d.purchaseid.toLowerCase().includes(searchText)
+              ) {
+                return true;
+              }
+              return false;
+            })}
+          sorting={sorting}
+          pagination={pagination}
+        />
       </Main>
     </>
   );

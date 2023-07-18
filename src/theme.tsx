@@ -1,4 +1,5 @@
 import { extendTheme } from '@chakra-ui/react'
+import { MultiSelectTheme } from 'chakra-multiselect'
 
 const fonts = { mono: `'Menlo', monospace` }
 

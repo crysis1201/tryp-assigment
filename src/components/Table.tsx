@@ -1,8 +1,7 @@
-import { IBookings } from "../mock/MOCK";
 import React from "react";
 import { useTable, useSortBy, usePagination } from "react-table";
 import {
-    Table,
+  Table,
   Thead,
   Tbody,
   Tr,
@@ -17,27 +16,36 @@ import {
   NumberInputField,
   NumberInputStepper,
   NumberIncrementStepper,
-  NumberDecrementStepper
+  NumberDecrementStepper,
+  ComponentDefaultProps,
 } from "@chakra-ui/react";
 import {
-    ArrowRightIcon,
-    ArrowLeftIcon,
-    ChevronRightIcon,
-    ChevronLeftIcon,
-    ChevronDownIcon,
-    ChevronUpIcon
+  ArrowRightIcon,
+  ArrowLeftIcon,
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
 } from "@chakra-ui/icons";
+import moment from "moment";
+import { IBookings } from "../mock/MakeData";
 
 interface ITable {
-    columns: string[]
-    data: IBookings[]
-    caption?: string
-    sorting?: boolean
-    pagination?: boolean
+  columns: string[];
+  data: IBookings[];
+  getCellProps: any;
+  caption?: string;
+  sorting?: boolean;
+  pagination?: boolean;
 }
 
-export const DateTable = ({columns, data, sorting, pagination}: ITable) => {
-
+export const DateTable = ({
+  columns,
+  data,
+  sorting,
+  pagination,
+  getCellProps,
+}: ITable) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -53,7 +61,7 @@ export const DateTable = ({columns, data, sorting, pagination}: ITable) => {
     nextPage,
     previousPage,
     setPageSize,
-    state: { pageIndex, pageSize }
+    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,
@@ -66,7 +74,9 @@ export const DateTable = ({columns, data, sorting, pagination}: ITable) => {
 
   return (
     <>
-      <Table {...getTableProps()}>
+      <Table
+        {...getTableProps()}
+      >
         <Thead>
           {headerGroups.map((headerGroup) => (
             <Tr {...headerGroup.getHeaderGroupProps()}>
@@ -102,7 +112,19 @@ export const DateTable = ({columns, data, sorting, pagination}: ITable) => {
               <Tr {...row.getRowProps()}>
                 {row.cells.map((cell) => {
                   return (
-                    <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
+                    <Td {...cell.getCellProps()}>
+                      <p
+                        {...cell.getCellProps([
+                          {
+                            className: cell.column.className,
+                            style: cell.column.style,
+                          },
+                          getCellProps(cell),
+                        ])}
+                      >
+                        {cell.column.id === "timestamp" ? moment(new Date(cell.value)).fromNow() : cell.render("Cell")}
+                      </p>
+                    </Td>
                   );
                 })}
               </Tr>
@@ -110,92 +132,94 @@ export const DateTable = ({columns, data, sorting, pagination}: ITable) => {
           })}
         </Tbody>
       </Table>
-      {pagination && <Flex justifyContent="space-between" m={4} alignItems="center">
-        <Flex>
-          <Tooltip label="First Page">
-            <IconButton
-              aria-label="btn"
-              onClick={() => gotoPage(0)}
-              isDisabled={!canPreviousPage}
-              icon={<ArrowLeftIcon h={3} w={3} />}
-              mr={4}
-            />
-          </Tooltip>
-          <Tooltip label="Previous Page">
-            <IconButton
-              aria-label="btn"
-              onClick={previousPage}
-              isDisabled={!canPreviousPage}
-              icon={<ChevronLeftIcon h={6} w={6} />}
-            />
-          </Tooltip>
-        </Flex>
+      {pagination && (
+        <Flex justifyContent="space-between" m={4} alignItems="center">
+          <Flex>
+            <Tooltip label="First Page">
+              <IconButton
+                aria-label="btn"
+                onClick={() => gotoPage(0)}
+                isDisabled={!canPreviousPage}
+                icon={<ArrowLeftIcon h={3} w={3} />}
+                mr={4}
+              />
+            </Tooltip>
+            <Tooltip label="Previous Page">
+              <IconButton
+                aria-label="btn"
+                onClick={previousPage}
+                isDisabled={!canPreviousPage}
+                icon={<ChevronLeftIcon h={6} w={6} />}
+              />
+            </Tooltip>
+          </Flex>
 
-        <Flex alignItems="center">
-          <Text flexShrink="0" mr={8}>
-            Page{" "}
-            <Text fontWeight="bold" as="span">
-              {pageIndex + 1}
-            </Text>{" "}
-            of{" "}
-            <Text fontWeight="bold" as="span">
-              {pageOptions.length}
+          <Flex alignItems="center">
+            <Text flexShrink="0" mr={8}>
+              Page{" "}
+              <Text fontWeight="bold" as="span">
+                {pageIndex + 1}
+              </Text>{" "}
+              of{" "}
+              <Text fontWeight="bold" as="span">
+                {pageOptions.length}
+              </Text>
             </Text>
-          </Text>
-          <Text flexShrink="0">Go to page:</Text>{" "}
-          <NumberInput
-            ml={2}
-            mr={8}
-            w={28}
-            min={1}
-            max={pageOptions.length}
-            onChange={(value) => {
-              const page = value ? (Number(value) - 1) : 0;
-              gotoPage(page);
-            }}
-            defaultValue={pageIndex + 1}
-          >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-          <Select
-            w={32}
-            value={pageSize}
-            onChange={(e) => {
-              setPageSize(Number(e.target.value));
-            }}
-          >
-            {[10, 20, 30, 40, 50].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </Select>
-        </Flex>
+            <Text flexShrink="0">Go to page:</Text>{" "}
+            <NumberInput
+              ml={2}
+              mr={8}
+              w={28}
+              min={1}
+              max={pageOptions.length}
+              onChange={(value) => {
+                const page = value ? Number(value) - 1 : 0;
+                gotoPage(page);
+              }}
+              defaultValue={pageIndex + 1}
+            >
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+            <Select
+              w={32}
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+              }}
+            >
+              {[10, 20, 30, 40, 50].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  Show {pageSize}
+                </option>
+              ))}
+            </Select>
+          </Flex>
 
-        <Flex>
-          <Tooltip label="Next Page">
-            <IconButton
-              aria-label="btn"
-              onClick={nextPage}
-              isDisabled={!canNextPage}
-              icon={<ChevronRightIcon h={6} w={6} />}
-            />
-          </Tooltip>
-          <Tooltip label="Last Page">
-            <IconButton
-              aria-label="btn"
-              onClick={() => gotoPage(pageCount - 1)}
-              isDisabled={!canNextPage}
-              icon={<ArrowRightIcon h={3} w={3} />}
-              ml={4}
-            />
-          </Tooltip>
+          <Flex>
+            <Tooltip label="Next Page">
+              <IconButton
+                aria-label="btn"
+                onClick={nextPage}
+                isDisabled={!canNextPage}
+                icon={<ChevronRightIcon h={6} w={6} />}
+              />
+            </Tooltip>
+            <Tooltip label="Last Page">
+              <IconButton
+                aria-label="btn"
+                onClick={() => gotoPage(pageCount - 1)}
+                isDisabled={!canNextPage}
+                icon={<ArrowRightIcon h={3} w={3} />}
+                ml={4}
+              />
+            </Tooltip>
+          </Flex>
         </Flex>
-      </Flex>}
+      )}
     </>
   );
-}
+};

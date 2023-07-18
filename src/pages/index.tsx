@@ -1,10 +1,9 @@
 import { Hero } from '../components/Hero'
 import { Container } from '../components/Container'
 import { DarkModeSwitch } from '../components/DarkModeSwitch'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { TableContainer } from '../components/TableContainer'
 import makeData from '../mock/MakeData'
-import { MockData } from '../mock/MOCK'
 
 const Index = () => {
 
@@ -12,10 +11,15 @@ const Index = () => {
   
   const data = useMemo(() => makeData(1000), []);
 
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+      setHydrated(true);
+  },[])
+
   return (
     <Container height="100vh">
       <Hero title='Tryp Bookings' />
-      <TableContainer headers={headers} data={data} sorting={true} pagination={true} caption="Bookings" />
+      {hydrated && <TableContainer headers={headers} data={data} sorting={true} pagination={true} caption="Bookings" />}
       <DarkModeSwitch />
     </Container>
   )
