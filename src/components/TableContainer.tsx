@@ -62,7 +62,7 @@ export const TableContainer = ({
     control: (provided, state) => ({
       ...provided,
       flexWrap: "nowrap",
-      minWidth: "20rem",
+      minWidth: "12rem",
     }),
     valueContainer: (provided, state) => ({
       ...provided,
@@ -79,6 +79,9 @@ export const TableContainer = ({
         <Flex
           justifyContent={"space-between"}
           alignItems={"center"}
+          flexGrow={"1"}
+          width={"100%"}
+          flexWrap={"wrap"}
           gap={"2rem"}
         >
           <Heading fontSize="1.5rem">{caption}</Heading>

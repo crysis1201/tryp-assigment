@@ -18,6 +18,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   ComponentDefaultProps,
+  Box,
 } from "@chakra-ui/react";
 import {
   ArrowRightIcon,
@@ -76,8 +77,10 @@ export const DateTable = ({
 
   return (
     <>
+    <Box overflowX={'scroll'}>
       <Table
         {...getTableProps()}
+        overflowX={"scroll"}
       >
         <Thead>
           {headerGroups.map((headerGroup) => (
@@ -134,6 +137,7 @@ export const DateTable = ({
           })}
         </Tbody>
       </Table>
+      </Box>
       {pagination && (
         <Flex justifyContent="space-between" m={4} alignItems="center">
           <Flex>
@@ -157,7 +161,7 @@ export const DateTable = ({
           </Flex>
 
           <Flex alignItems="center">
-            <Text flexShrink="0" mr={8}>
+            <Text flexShrink="0" mr={{sm: "8px", base: "0"}}>
               Page{" "}
               <Text fontWeight="bold" as="span">
                 {pageIndex + 1}
@@ -167,8 +171,9 @@ export const DateTable = ({
                 {pageOptions.length}
               </Text>
             </Text>
-            <Text flexShrink="0">Go to page:</Text>{" "}
+            <Text display={{md: "block", base: "none"}} flexShrink="0">Go to page:</Text>{" "}
             <NumberInput
+              display={{md: "block", base: "none"}}
               ml={2}
               mr={8}
               w={28}
@@ -187,6 +192,7 @@ export const DateTable = ({
               </NumberInputStepper>
             </NumberInput>
             <Select
+              display={{md: "block", base: "none"}}
               w={32}
               value={pageSize}
               onChange={(e) => {
