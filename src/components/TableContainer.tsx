@@ -13,8 +13,8 @@ import {
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { ChakraStylesConfig, Select } from "chakra-react-select";
-import { IBookings } from "../mock/MakeData";
 import { RadioCard } from "./RadioCard";
+import { IBookings } from "../pages";
 
 interface ITable {
   headers: string[];
@@ -32,7 +32,7 @@ export const TableContainer = ({
   pagination,
 }: ITable) => {
   const [searchText, setSearchText] = useState("");
-  const [size, setSize] = useState("xl");
+  const [size, setSize] = useState("lg");
   const [value, setValue] = useState([]);
   const [selected, setSelected] = useState([]);
 
@@ -40,7 +40,7 @@ export const TableContainer = ({
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'sizes',
-    defaultValue: 'xl',
+    defaultValue: 'lg',
     onChange: (e) => setSize(e),
   })
 

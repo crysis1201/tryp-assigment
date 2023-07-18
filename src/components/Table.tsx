@@ -29,7 +29,7 @@ import {
   ChevronUpIcon,
 } from "@chakra-ui/icons";
 import moment from "moment";
-import { IBookings } from "../mock/MakeData";
+import { IBookings } from "../pages";
 
 interface ITable {
   columns: string[];
